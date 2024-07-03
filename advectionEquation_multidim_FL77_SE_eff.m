@@ -1,4 +1,6 @@
 function RHS = advectionEquation_multidim_FL77_SE_eff(S,u,v,w, dt, Lx, Ly, Lz, X_size, Y_size, Z_size, X_cell, Y_cell, Z_cell)
+%implement MITGCM's multidimensional scheme for RHS calculation:
+
 %BCtype = type of boundary conditions.
 %0 for no flux, 1 for constant flux at surface,
 % 2 for restoring flux at surface.
@@ -20,10 +22,6 @@ function RHS = advectionEquation_multidim_FL77_SE_eff(S,u,v,w, dt, Lx, Ly, Lz, X
 %X_size = diff(X_eval,1,3);
 %Y_size = diff(Y_eval,1,2);
 %Z_size = diff(Z_eval,1,1);
-
-
-
-%implement MITGCM's multidimensional scheme for RHS calculation:
 
 %BCtype = type of boundary conditions.
 %[~, Fx_advection_1, ~, ~] = advectionEquation_FL77_SE_eff(x_cell, y_cell, z_cell, t, S,u,v,w, dt);
