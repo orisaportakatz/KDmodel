@@ -1,0 +1,65 @@
+The KD model has two main versions.
+Both versions are essentially the same except for their diffusion subroutines:
+
+- "modelRun_realistic_noMOW_param19_eff_MIXED_smooth.m" appears in the paper and the thesis.
+It does not solve the density inversions that may occur.
+Therefore in its final steady state, there are regions where high-density water lies above low-density water.
+It should use the diffusion function "diffusionEquation_oscBC_param19_mixed"
+(check this main file to make sure it uses the correct diffusion function.)
+
+- "modelRun_realistic_noMOW_SELECTdiff_MIXED_setGamma.m" solves density inversions by raising the diffusion where density is inverted.
+This version has not been published yet and still lacks a proper spin-up initial condition.
+However, it can be used with the given initial and boundary conditions and gives nice results.
+
+* Grid *
+The grid is defined in the main function.
+It has areas of higher resolution and areas of lower resolution.
+This has been designed to heighten the resolution where there are small features of the flow, or very fast ones (like the Gulf Stream area)
+The grid should be modified if the velocity field is changed.
+Make sure the CFL condition is satisfied for both the diffusion and the advection terms.
+Essentially, must make sure that both of the following are satisfied:
+- kappa * delta t / delta x/y/z ^2 << 1
+- U * delta t / delta x/y/z << 1
+
+* Boundary conditions *
+Main function displays two options:
+- Option 1: Use a simple cosine function for the boundary conditions,
+- Option 2: (paper version) Use a latitude-dependent SODA data to set the boundary conditions.
+
+* Initial conditions *
+Can initialize with a constant T and S field that equal zero, and let the boundary conditions and velocity field bring the T and S to a steady state (run for about 500 years. look at aV to see when the simulation reaches a steady state)
+Can also initialize with the spin-up from the paper, needs to be sent separately.
+                                                                                                                                                      
+                                                                                                                                                      
+* Advection scheme *
+Uses a SVD flux limiter method. See comments in advection functions themselves.
+
+* Velocity fields *
+
+Both versions use a velocity field that is built of two components - 
+
+1. UH == (uH, vH, wH) - the horizontal double-gyre velocity field
+2. UV == (uV, vV, wV) - the vertical (AMOC) velocity field
+The eventual velocity field inserted into the advection function is then given by:
+u = aH * uH + aV * uV;
+v = aH * vH + aV * vV;
+w = aV * wV;
+
+1: UH is a predetermined function of x,y,z,t that is defined in the main file itself.
+Note that it is divided into two parts:
+The first part (uHtau, vHtau, wHtau) of the definition appears before the main for-loop starts,
+and contains all components of the velocity field except the time-dependent part;
+Then, inside the for-loop, the final (uH, vH, wH) are defined by multiplying  (uHtau, vHtau, wHtau) by a sine function adjusted to the current time-step.
+Its strength coefficient aH is predefined by the parameter file.
+  
+2: UV is the AMOC velocity field. It is defined in the main file, outside of the for-loop.
+  Then, inside the for-loop, it is multiplied by aV.
+aV is the strength coefficient of the AMOC.
+It is defined dynamically, updated for each time-step inside the main for-loop by:
+  aV = - Gamma * (density_south - density_north)
+
+
+    
+
+:
+- The old version, that appears in the paper, does
