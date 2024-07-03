@@ -1,4 +1,12 @@
 function [RHS, Fx_advection, Fy_advection, Fz_advection] = advectionEquation_FL77_SE_eff(S,u,v,w, dt, Lx, Ly, Lz, X_size, Y_size, Z_size, X_cell, Y_cell, Z_cell)
+% Hyperboliv TVD flux limiter advection method.
+% See: "https://math.stackexchange.com/questions/3321872/how-do-i-properly-implement-a-hyperbolic-tvd-flux-limiter"
+% combining a low order scheme (upwind) with a high order scheme (Lax-Wendorff)
+%For the high-order scheme, the slope limiter is:
+% Sweby limiter: THE BEST SO FAR (with MD, beta = 1.5)
+%betaSweby = 1.5; BEST
+
+
 %BCtype = type of boundary conditions.
 %0 for no flux, 1 for constant flux at surface,
 % 2 for restoring flux at surface.
