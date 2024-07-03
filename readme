@@ -57,9 +57,3 @@ Its strength coefficient aH is predefined by the parameter file.
 aV is the strength coefficient of the AMOC.
 It is defined dynamically, updated for each time-step inside the main for-loop by:
   aV = - Gamma * (density_south - density_north)
-
-
-    
-
-:
-- The old version, that appears in the paper, does
